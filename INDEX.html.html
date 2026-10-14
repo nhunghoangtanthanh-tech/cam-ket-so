@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cây Cam Kết Của Người Công Dân Số - Tin Học 9</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti for celebratory animation -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(51, 65, 85, 0.8);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(16, 185, 129, 0.6);
+    }
+    @keyframes floatLeaf {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(1.5deg); }
+    }
+    .leaf-card-animate {
+      animation: floatLeaf 4s ease-in-out infinite;
+    }
+    .leaf-card-animate:nth-child(even) {
+      animation-delay: 2s;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- Top Navigation & Header -->
+  <header class="border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-xl shadow-lg shadow-emerald-500/20">
+          🌿
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Tin học 9 • Bài 4</span>
+            <span class="hidden sm:inline-block text-[11px] text-slate-400">Một số vấn đề pháp lí về sử dụng Internet</span>
+          </div>
+          <h1 class="text-base sm:text-lg font-black text-white tracking-tight">CÂY CAM KẾT CỦA NGƯỜI CÔNG DÂN SỐ</h1>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-slate-800/80 border border-slate-700/80 rounded-xl text-xs font-semibold text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Đã gắn: <strong id="header-count" class="text-emerald-400 font-bold">4</strong> chiếc lá</span>
+        </div>
+        <button onclick="window.showShareModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+          <span class="hidden sm:inline">Mã QR lớp học</span>
+          <span class="sm:hidden">QR</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+      <!-- Left Column: Commitment Input Form -->
+      <section class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+        <div class="absolute -top-12 -right-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex items-center gap-2 mb-4">
+          <span class="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+          </span>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-white">Gửi Cam Kết Của Em</h2>
+            <p class="text-xs text-slate-400">Thay đổi bắt đầu từ một hành động nhỏ mỗi ngày</p>
+          </div>
+        </div>
+
+        <form id="commitment-form" onsubmit="event.preventDefault(); window.submitCommitment();" class="space-y-4">
+          <!-- Student Info: Name & Class -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="col-span-2">
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Họ và tên học sinh <span class="text-emerald-400">*</span></label>
+              <input id="input-name" type="text" placeholder="Ví dụ: Nguyễn Văn An" required
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 transition outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Lớp <span class="text-emerald-400">*</span></label>
+              <input id="input-class" type="text" placeholder="9A1" required
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 transition outline-none uppercase font-medium" />
+            </div>
+          </div>
+
+          <!-- Quick Selection of Good Habits -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Chọn mẫu cam kết có sẵn (hoặc tự viết bên dưới):</label>
+            <div class="relative">
+              <select id="select-template" onchange="window.applyTemplate(this.value)"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700/80 text-slate-200 text-xs sm:text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 transition outline-none appearance-none">
+                <option value="">-- Bấm vào đây để chọn nhanh thói quen tốt --</option>
+                <option value="Tắt màn hình điện thoại trước giờ đi ngủ ít nhất 30 phút để bảo vệ sức khỏe và giấc ngủ.">🌙 Tắt điện thoại trước giờ đi ngủ ít nhất 30 phút</option>
+                <option value="Giới hạn thời gian chơi game và xem video ngắn dưới 1 giờ/ngày, ưu tiên việc học tập.">🎮 Giới hạn chơi game & video ngắn dưới 1 giờ/ngày</option>
+                <option value="Luôn xin phép và được sự đồng ý của bạn bè trước khi chụp hoặc đăng ảnh lên mạng.">📸 Luôn xin phép bạn trước khi chụp/đăng ảnh lên mạng</option>
+                <option value="Tuyệt đối không nhấn vào link lạ nhận quà và không chia sẻ mật khẩu/mã OTP cho ai.">🔒 Tuyệt đối không bấm link lạ, không chia sẻ OTP</option>
+                <option value="Không để lại bình luận xúc phạm, chế giễu bạn bè; xây dựng văn hóa giao tiếp tử tế.">🤝 Không bình luận ác ý, xây dựng ứng xử văn minh</option>
+                <option value="Thu gom pin hỏng và thiết bị điện tử cũ đưa đến điểm tái chế, bảo vệ môi trường.">♻️ Thu gom pin và rác điện tử đến nơi tái chế</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Commitment Textarea -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nội dung cam kết hành động <span class="text-emerald-400">*</span></label>
+            <textarea id="input-text" rows="3" required placeholder="Từ hôm nay, em cam kết sẽ..."
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700/80 text-white placeholder-slate-500 text-xs sm:text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 transition outline-none custom-scrollbar leading-relaxed"></textarea>
+          </div>
+
+          <!-- Color Theme Selection for Leaf -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-2">Chọn màu sắc chiếc lá số của em:</label>
+            <div class="flex items-center gap-2.5">
+              <label class="cursor-pointer">
+                <input type="radio" name="leaf-color" value="emerald" checked class="peer sr-only">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500 peer-checked:ring-2 peer-checked:ring-white peer-checked:scale-110 flex items-center justify-center text-white text-xs font-bold transition shadow-md">✓</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="leaf-color" value="teal" class="peer sr-only">
+                <div class="w-8 h-8 rounded-xl bg-teal-500 peer-checked:ring-2 peer-checked:ring-white peer-checked:scale-110 flex items-center justify-center text-white text-xs font-bold transition shadow-md"></div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="leaf-color" value="blue" class="peer sr-only">
+                <div class="w-8 h-8 rounded-xl bg-sky-500 peer-checked:ring-2 peer-checked:ring-white peer-checked:scale-110 flex items-center justify-center text-white text-xs font-bold transition shadow-md"></div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="leaf-color" value="purple" class="peer sr-only">
+                <div class="w-8 h-8 rounded-xl bg-purple-500 peer-checked:ring-2 peer-checked:ring-white peer-checked:scale-110 flex items-center justify-center text-white text-xs font-bold transition shadow-md"></div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="leaf-color" value="amber" class="peer sr-only">
+                <div class="w-8 h-8 rounded-xl bg-amber-500 peer-checked:ring-2 peer-checked:ring-white peer-checked:scale-110 flex items-center justify-center text-white text-xs font-bold transition shadow-md"></div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-sm shadow-lg shadow-emerald-700/30 border border-emerald-400/40 transition transform active:scale-98 flex items-center justify-center gap-2">
+            <span>🌿</span>
+            <span>Gắn Lời Cam Kết Lên Cây Số</span>
+          </button>
+        </form>
+
+        <div class="mt-4 p-3 rounded-2xl bg-slate-950/60 border border-slate-800 text-[11px] text-slate-400 flex items-start gap-2">
+          <span class="text-emerald-400 text-sm">💡</span>
+          <p>Mỗi cam kết là một hành động thiết thực giúp em tự bảo vệ mình và trở thành một công dân số có trách nhiệm.</p>
+        </div>
+      </section>
+
+      <!-- Right Column: Digital Commitment Garden / Wall -->
+      <section class="lg:col-span-7 flex flex-col gap-4">
+        <!-- Control Bar: Filter, Counter & Actions -->
+        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🌳</span>
+            <div>
+              <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                <span>Vườn Cam Kết Lớp Học</span>
+                <span id="badge-total" class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">4 cam kết</span>
+              </h2>
+              <p class="text-[11px] text-slate-400">Các lời hứa hành động tích cực từ học sinh</p>
+            </div>
+          </div>
+
+          <!-- Class filter & Reset -->
+          <div class="flex items-center gap-2">
+            <select id="filter-class" onchange="window.filterCommitments(this.value)" class="px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-300 text-xs font-semibold focus:outline-none focus:border-emerald-500">
+              <option value="ALL">Tất cả các lớp</option>
+              <option value="9A1">Lớp 9A1</option>
+              <option value="9A2">Lớp 9A2</option>
+              <option value="9A3">Lớp 9A3</option>
+              <option value="9A4">Lớp 9A4</option>
+            </select>
+            <button onclick="window.clearSampleData()" title="Đặt lại về mặc định" class="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700 transition text-xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Commitments Leaf Grid -->
+        <div id="commitments-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[640px] overflow-y-auto pr-1 custom-scrollbar">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div id="empty-state" class="hidden flex-col items-center justify-center p-10 bg-slate-900/50 border border-dashed border-slate-800 rounded-3xl text-center">
+          <div class="w-14 h-14 rounded-2xl bg-slate-800/80 flex items-center justify-center text-3xl mb-3">🌱</div>
+          <h3 class="text-sm font-bold text-white mb-1">Chưa có chiếc lá cam kết nào ở lớp này</h3>
+          <p class="text-xs text-slate-400">Hãy là người đầu tiên gửi cam kết hành động lên cây số nhé!</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Classroom QR & Share Link Modal -->
+  <div id="modal-qr" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/70">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">📱</span>
+          <h3 class="font-bold text-white text-sm">MÃ QR QUÉT BẰNG ĐIỆN THOẠI</h3>
+        </div>
+        <button onclick="window.hideShareModal()" class="p-1 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="p-6 flex flex-col items-center text-center space-y-4">
+        <!-- QR Display -->
+        <div class="p-3 bg-white rounded-2xl shadow-xl border-4 border-emerald-500/40">
+          <img id="qr-code-img" src="" alt="Mã QR Cam Kết Số" class="w-52 h-52 object-contain rounded-lg" />
+        </div>
+        <p class="text-xs text-slate-300 font-medium">Học sinh mở <strong>Camera</strong> hoặc <strong>Zalo</strong> trên điện thoại để quét và gửi cam kết ngay tại chỗ.</p>
+
+        <!-- Direct Link Copy -->
+        <div class="w-full space-y-1.5 text-left">
+          <label class="text-xs font-semibold text-slate-400">Đường link trực tiếp:</label>
+          <div class="flex items-center gap-2">
+            <input id="input-share-url" type="text" readonly class="flex-1 px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-emerald-400 font-mono select-all focus:outline-none" />
+            <button onclick="window.copyCurrentUrl()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+              <span>Sao chép</span>
+            </button>
+          </div>
+          <span id="toast-copied" class="text-[11px] text-emerald-400 hidden font-semibold">✓ Đã sao chép link thành công!</span>
+        </div>
+      </div>
+
+      <div class="p-3 border-t border-slate-800 bg-slate-950/60 flex justify-end">
+        <button onclick="window.hideShareModal()" class="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Message -->
+  <div id="toast-box" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-emerald-950/90 border border-emerald-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl backdrop-blur-md">
+    <div class="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 text-base font-bold">✓</div>
+    <div>
+      <div id="toast-title" class="text-xs font-bold text-emerald-300">Đã gắn cam kết lên cây số!</div>
+      <div id="toast-desc" class="text-[11px] text-slate-300">Cảm ơn em đã chung tay xây dựng môi trường số an toàn.</div>
+    </div>
+  </div>
+
+  <script>
+    // Initial sample dataset representing students in the lesson
+    const DEFAULT_COMMITMENTS = [
+      {
+        id: 1,
+        name: "Trần Minh",
+        className: "9A1",
+        text: "Em cam kết luôn xin phép bạn trước khi chụp ảnh và tuyệt đối không bao giờ tự ý đăng ảnh bạn lên mạng.",
+        color: "emerald",
+        likes: 12,
+        time: "Vừa xong"
+      },
+      {
+        id: 2,
+        name: "Lê Hoàng Lan",
+        className: "9A1",
+        text: "Em cam kết tắt điện thoại trước giờ đi ngủ 30 phút để bảo vệ mắt và giữ tinh thần tỉnh táo khi đến lớp.",
+        color: "teal",
+        likes: 8,
+        time: "2 phút trước"
+      },
+      {
+        id: 3,
+        name: "Phạm Quốc Huy",
+        className: "9A2",
+        text: "Em cam kết giới hạn thời gian chơi game dưới 1 tiếng mỗi ngày, hoàn thành bài tập trước khi giải trí.",
+        color: "blue",
+        likes: 15,
+        time: "5 phút trước"
+      },
+      {
+        id: 4,
+        name: "Nguyễn Mai Anh",
+        className: "9A1",
+        text: "Em cam kết không bao giờ nhấn vào link lạ nhận quà và luôn kiểm tra kĩ trước khi tải tài liệu học tập.",
+        color: "purple",
+        likes: 9,
+        time: "8 phút trước"
+      }
+    ];
+
+    let commitments = [...DEFAULT_COMMITMENTS];
+    let activeFilter = "ALL";
+
+    const COLOR_MAP = {
+      emerald: {
+        border: "border-emerald-500/30 hover:border-emerald-400",
+        badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+        avatar: "bg-emerald-500/20 text-emerald-400",
+        glow: "from-emerald-500/10"
+      },
+      teal: {
+        border: "border-teal-500/30 hover:border-teal-400",
+        badge: "bg-teal-500/20 text-teal-300 border-teal-500/30",
+        avatar: "bg-teal-500/20 text-teal-400",
+        glow: "from-teal-500/10"
+      },
+      blue: {
+        border: "border-sky-500/30 hover:border-sky-400",
+        badge: "bg-sky-500/20 text-sky-300 border-sky-500/30",
+        avatar: "bg-sky-500/20 text-sky-400",
+        glow: "from-sky-500/10"
+      },
+      purple: {
+        border: "border-purple-500/30 hover:border-purple-400",
+        badge: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+        avatar: "bg-purple-500/20 text-purple-400",
+        glow: "from-purple-500/10"
+      },
+      amber: {
+        border: "border-amber-500/30 hover:border-amber-400",
+        badge: "bg-amber-500/20 text-amber-300 border-amber-500/30",
+        avatar: "bg-amber-500/20 text-amber-400",
+        glow: "from-amber-500/10"
+      }
+    };
+
+    function renderCommitments() {
+      const container = document.getElementById("commitments-container");
+      const emptyState = document.getElementById("empty-state");
+      const filtered = commitments.filter(item => activeFilter === "ALL" || item.className.toUpperCase() === activeFilter.toUpperCase());
+
+      // Update counters
+      document.getElementById("badge-total").innerText = `${filtered.length} cam kết`;
+      document.getElementById("header-count").innerText = `${commitments.length}`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = "";
+        emptyState.classList.remove("hidden");
+        emptyState.classList.add("flex");
+        return;
+      }
+
+      emptyState.classList.add("hidden");
+      emptyState.classList.remove("flex");
+
+      container.innerHTML = filtered.map(item => {
+        const theme = COLOR_MAP[item.color] || COLOR_MAP.emerald;
+        return `
+          <div class="leaf-card-animate bg-slate-900/90 border ${theme.border} rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl ${theme.glow} to-transparent rounded-bl-full pointer-events-none opacity-60"></div>
+
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-lg ${theme.avatar} flex items-center justify-center font-extrabold text-xs">
+                    ${item.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-bold text-white leading-tight">${item.name}</h4>
+                    <span class="text-[10px] text-slate-400">${item.time}</span>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${theme.badge}">
+                  ${item.className}
+                </span>
+              </div>
+
+              <p class="text-xs text-slate-200 leading-relaxed font-normal bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/80 mb-3">
+                “${item.text}”
+              </p>
+            </div>
+
+            <div class="flex items-center justify-between pt-1 border-t border-slate-800/60 text-[11px] text-slate-400">
+              <span class="text-emerald-400 font-medium flex items-center gap-1">
+                <span>🌱</span> Cam kết hành động
+              </span>
+              <button onclick="window.likeCommitment(${item.id})" class="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-800/80 hover:bg-rose-500/20 hover:text-rose-400 border border-slate-700/60 transition group-hover:border-slate-600">
+                <span>❤️</span>
+                <span class="font-bold text-slate-300">${item.likes}</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    window.applyTemplate = function(val) {
+      if (val) {
+        document.getElementById("input-text").value = val;
+      }
+    };
+
+    window.submitCommitment = function() {
+      const name = document.getElementById("input-name").value.trim();
+      const className = document.getElementById("input-class").value.trim().toUpperCase();
+      const text = document.getElementById("input-text").value.trim();
+      const colorInput = document.querySelector('input[name="leaf-color"]:checked');
+      const color = colorInput ? colorInput.value : "emerald";
+
+      if (!name || !className || !text) return;
+
+      const newLeaf = {
+        id: Date.now(),
+        name: name,
+        className: className,
+        text: text,
+        color: color,
+        likes: 1,
+        time: "Vừa xong"
+      };
+
+      // Add to front of list
+      commitments.unshift(newLeaf);
+
+      // Trigger Confetti Celebration
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 60,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+
+      // Show toast
+      showToast(name);
+
+      // Reset form fields
+      document.getElementById("input-name").value = "";
+      document.getElementById("input-text").value = "";
+      document.getElementById("select-template").value = "";
+
+      // Re-render
+      renderCommitments();
+    };
+
+    window.likeCommitment = function(id) {
+      const target = commitments.find(c => c.id === id);
+      if (target) {
+        target.likes++;
+        renderCommitments();
+      }
+    };
+
+    window.filterCommitments = function(filterVal) {
+      activeFilter = filterVal;
+      renderCommitments();
+    };
+
+    window.clearSampleData = function() {
+      commitments = [...DEFAULT_COMMITMENTS];
+      activeFilter = "ALL";
+      document.getElementById("filter-class").value = "ALL";
+      renderCommitments();
+      showToast("Đã đặt lại", "Đã khôi phục dữ liệu mẫu ban đầu.");
+    };
+
+    function showToast(titleText, descText = "Cam kết của em đã được gắn trang trọng lên cây số!") {
+      const toast = document.getElementById("toast-box");
+      document.getElementById("toast-title").innerText = `Cảm ơn ${titleText}!`;
+      document.getElementById("toast-desc").innerText = descText;
+
+      toast.classList.remove("translate-y-24", "opacity-0");
+      toast.classList.add("translate-y-0", "opacity-100");
+
+      setTimeout(() => {
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("translate-y-24", "opacity-0");
+      }, 3500);
+    }
+
+    window.showShareModal = function() {
+      const modal = document.getElementById("modal-qr");
+      const urlInput = document.getElementById("input-share-url");
+      const qrImg = document.getElementById("qr-code-img");
+      const currentUrl = window.location.href;
+
+      urlInput.value = currentUrl;
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentUrl)}`;
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    };
+
+    window.hideShareModal = function() {
+      const modal = document.getElementById("modal-qr");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      document.getElementById("toast-copied").classList.add("hidden");
+    };
+
+    window.copyCurrentUrl = function() {
+      const urlInput = document.getElementById("input-share-url");
+      urlInput.select();
+      urlInput.setSelectionRange(0, 99999);
+      try {
+        document.execCommand("copy");
+        const hint = document.getElementById("toast-copied");
+        hint.classList.remove("hidden");
+        setTimeout(() => hint.classList.add("hidden"), 3000);
+      } catch (err) {
+        console.error("Copy error", err);
+      }
+    };
+
+    // Initial render on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCommitments();
+    });
+  </script>
+</body>
+</html>
